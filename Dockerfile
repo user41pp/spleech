@@ -19,7 +19,8 @@ RUN pip install --no-cache-dir --upgrade pip
     
 RUN pip install youtube-transcript-api flask
 
-# Clone the GitHub repository into the working directory
+# Clone the GitHub repository into the working directory. Print date to always clone newest version.
+RUN echo $(date +%s) > /CACHE_BUST
 RUN git clone https://github.com/user41pp/spleech.git .
 
 # Make the startup script executable
