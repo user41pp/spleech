@@ -15,17 +15,21 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Clone the GitHub repository into the working directory
-RUN git clone https://github.com/ytdl-org/youtube-dl.git .
+RUN git clone https://github.com/user41pp/spleech.git .
 
 # Install Python dependencies if any (youtube-dl doesn't have a requirements.txt but for extensibility)
 RUN pip install --no-cache-dir --upgrade pip
 
-RUN cd /app && pip install .
+RUN pip install youtube-transcript-api flask
 
-RUN pip install youtube-transcript-api
+# Make the startup script executable
+RUN chmod +x /app/startup.sh
 
-# Export the PATH to include /app/bin
-ENV PATH="/app/bin:${PATH}"
+# Expose the Flask port
+EXPOSE 5000
 
-# Optional: Add entrypoint or command
+# Use the startup script as the default entrypoint
+ENTRYPOINT ["/app/startup.sh"]
+
+# Set the default command to run the Flask app
 CMD ["sleep", "inf"]

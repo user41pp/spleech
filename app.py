@@ -34,6 +34,10 @@ def fetch_transcript():
     
     return jsonify({"transcript": result})
 
+@app.route('/')
+def status():
+    return jsonify({"status": "App is running", "app_name": "spleech-rough-wildflower-5228"})
+
 def main_cli():
     parser = argparse.ArgumentParser(description="Fetch YouTube video transcript using video ID and cookies.\nExample: python script.py <video_id> <cookies>")
     parser.add_argument('video_id', type=str, help="The ID of the YouTube video.")
