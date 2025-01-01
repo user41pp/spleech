@@ -9,9 +9,7 @@ app = Flask(__name__)
 def get_transcript(video_id, cookies_path, retries=3, delay=2):
     for attempt in range(retries):
         try:
-            with open(cookies_path, 'r') as f:
-                cookies = f.read()
-            transcript = YouTubeTranscriptApi.get_transcript(video_id, cookies=cookies)
+            transcript = YouTubeTranscriptApi.get_transcript(video_id, cookies=cookies_path)
             return transcript
         except Exception as e:
             if attempt < retries - 1:
