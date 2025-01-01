@@ -13,15 +13,14 @@ RUN apt-get update && apt-get install -y \
     git nano htop\
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
-
+    
+# Install Python dependencies if any (youtube-dl doesn't have a requirements.txt but for extensibility)
+RUN pip install --no-cache-dir --upgrade pip
+    
+RUN pip install youtube-transcript-api flask
 
 # Clone the GitHub repository into the working directory
 RUN git clone https://github.com/user41pp/spleech.git .
-
-# Install Python dependencies if any (youtube-dl doesn't have a requirements.txt but for extensibility)
-RUN pip install --no-cache-dir --upgrade pip
-
-RUN pip install youtube-transcript-api flask
 
 # Make the startup script executable
 RUN chmod +x /app/startup.sh
