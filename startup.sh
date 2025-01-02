@@ -2,7 +2,7 @@
 set -e
 
 # 1) Start Cloudflare WARP daemon in the background
-warp-svc &
+nohup warp-svc > /dev/null 2>&1 &
 
 # 2) Wait a moment to ensure warp-svc is running
 sleep 2

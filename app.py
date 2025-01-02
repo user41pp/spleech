@@ -31,7 +31,8 @@ def get_transcript(video_id, cookies_path, retries=3, delay=2):
     for attempt in range(retries):
         try:
             logging.debug(f"Attempt {attempt + 1} to fetch transcript for video_id={video_id} with cookies at {cookies_path}")
-            transcript = YouTubeTranscriptApi.get_transcript(video_id, cookies=cookies_path)
+            transcript = YouTubeTranscriptApi.get_transcript(video_id)
+            #transcript = YouTubeTranscriptApi.get_transcript(video_id, cookies=cookies_path)
             logging.info(f"Successfully fetched transcript for video_id={video_id}")
             return transcript
         except Exception as e:
