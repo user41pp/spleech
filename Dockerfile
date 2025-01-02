@@ -55,7 +55,6 @@ RUN git clone https://github.com/user41pp/spleech.git .
 # 4) Make startup scripts executable
 # ----------------------------
 RUN chmod +x /app/startup.sh
-RUN chmod +x /app/startup_wrapper.sh
 
 # Expose the Flask port
 EXPOSE 5000
