@@ -19,7 +19,7 @@ WORKDIR /app
 #   base distro, you will need to adjust accordingly. 
 # ----------------------------
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends gnupg curl nano htop tmux && \
+    apt-get install -y --no-install-recommends git gnupg curl nano htop tmux && \
     curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --dearmor | \
       tee /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg >/dev/null && \
     echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ bullseye main" \
@@ -27,6 +27,12 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y --no-install-recommends cloudflare-warp && \
     rm -rf /var/lib/apt/lists/*
+
+# Install required system dependencies
+RUN apt-get update && apt-get install -y \
+    git nano htop tmux\
+    --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
 
 # ----------------------------
 # 2) Install Python dependencies
