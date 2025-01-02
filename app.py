@@ -67,6 +67,24 @@ def extract_video_id(youtube_url_or_id):
     # Return None if the video ID couldn't be extracted
     return None
 
+def extract_clean_text(transcript_data):
+    """
+    Extracts and returns the clean text from a YouTube transcript.
+
+    Parameters:
+        transcript_data (list): The transcript data containing timestamps and text.
+            Expected format: [{'duration': float, 'start': float, 'text': str}, ...]
+
+    Returns:
+        str: A single string with all the transcript text concatenated and cleaned of metadata.
+    """
+    if not isinstance(transcript_data, list):
+        raise TypeError("Input must be a list of dictionaries containing 'text' keys.")
+
+    clean_text = ' '.join(entry['text'] for entry in transcript_data if isinstance(entry, dict) and 'text' in entry)
+    return str(clean_text)
+
+
 def get_transcript(youtube_url_or_video_id, retries=3, delay=2):
     video_id = extract_video_id(youtube_url_or_video_id)
     logging.debug(f"Extracted videoID: {video_id}")
@@ -75,7 +93,7 @@ def get_transcript(youtube_url_or_video_id, retries=3, delay=2):
             logging.debug(f"Attempt {attempt + 1} to fetch transcript for video_id={video_id}")
             transcript = YouTubeTranscriptApi.get_transcript(video_id)
             logging.info(f"Successfully fetched transcript for video_id={video_id}")
-            return transcript
+            return extract_clean_text(transcript)
         except Exception as e:
             logging.warning(f"Attempt {attempt + 1} failed: {e}")
             if attempt < retries - 1:
@@ -106,7 +124,7 @@ def fetch_transcript():
             return jsonify({"error": "Invalid or missing video_id"}), 400
 
         result = get_transcript(video_id)
-        if isinstance(result, str):  # Error message
+        if not isinstance(result, str):  # Error message
             logging.error(f"Error fetching transcript: {result}")
             return jsonify({"error": result}), 500
 
