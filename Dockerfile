@@ -38,7 +38,7 @@ RUN apt-get update && apt-get install -y \
 # 2) Install Python dependencies
 # ----------------------------
 RUN pip install --no-cache-dir --upgrade pip
-RUN pip install youtube-transcript-api flask
+RUN pip install youtube-transcript-api flask gunicorn
 
 # ----------------------------
 # 3) Clone your repository

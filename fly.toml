@@ -1,4 +1,4 @@
-app = "spleech-rough-wildflower-5228"
+app = "spleech"
 primary_region = "fra"
 
 [http_service]
