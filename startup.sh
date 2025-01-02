@@ -9,7 +9,7 @@ sleep 2
 
 # 3) Automatically accept TOS, register, and connect
 #    (If "warp-cli register --accept-tos" is sufficient for you, use that)
-yes y | warp-cli registration new
+yes y | warp-cli registration new --accept-tos
 warp-cli mode proxy
 warp-cli connect
 
