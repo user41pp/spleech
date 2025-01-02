@@ -10,7 +10,7 @@ min_machines_running = 1
 processes = ["app"]
 
 [experimental]
-  auto_rollback = true
+  auto_rollback = false
 
 [[services]]
   internal_port = 5000
