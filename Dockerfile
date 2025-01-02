@@ -18,22 +18,15 @@ WORKDIR /app
 #   NOTE: For Debian 11 (bullseye). If you are on a different
 #   base distro, you will need to adjust accordingly.
 # ----------------------------
-#RUN apt-get update && \
-#    apt-get install -y --no-install-recommends gnupg curl && \
-#    curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --dearmor | \
-#      tee /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg >/dev/null && \
-#    echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ bullseye main" \
-#      | tee /etc/apt/sources.list.d/cloudflare-client.list && \
-#    apt-get update && \
-#    apt-get install -y --no-install-recommends cloudflare-warp && \
-#    rm -rf /var/lib/apt/lists/*
-
-# Install necessary warp dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    wget \
-    cloudflare-warp \
-    && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gnupg curl && \
+    curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --dearmor | \
+      tee /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg >/dev/null && \
+    echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ bullseye main" \
+      | tee /etc/apt/sources.list.d/cloudflare-client.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends cloudflare-warp && \
+    rm -rf /var/lib/apt/lists/*
 
 # Install required system dependencies
 RUN apt-get update && apt-get install -y \
