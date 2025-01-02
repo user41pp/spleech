@@ -36,7 +36,6 @@ def fetch_transcript():
     try:
         data = request.get_json()
         logging.debug(f"Received request data: {data}")
-        
         video_id = data.get('video_id')
         cookies = data.get('cookies')
 

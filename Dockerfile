@@ -31,7 +31,7 @@ RUN chmod +x /app/startup_wrapper.sh
 EXPOSE 5000
 
 # Use the startup script as the default entrypoint
-ENTRYPOINT ["/app/startup_wrapper.sh"]
+ENTRYPOINT ["/app/startup.sh"]
 
 # Set the default command to run the Flask app
 CMD ["sleep", "inf"]
