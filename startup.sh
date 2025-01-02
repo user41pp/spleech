@@ -3,13 +3,13 @@
 set -e
 
 # Start Cloudflare WARP daemon
-nohup warp-svc > /dev/null 2>&1 &
-echo "Starting warp-svc in the background..."
-sleep 2
+#nohup warp-svc > /dev/null 2>&1 &
+#echo "Starting warp-svc in the background..."
+#sleep 2
 
 # Register and connect to WARP
-warp-cli register --accept-tos || echo "WARP registration failed or already registered."
-warp-cli connect || echo "WARP connection failed. Continuing without WARP."
+#warp-cli register --accept-tos || echo "WARP registration failed or already registered."
+#warp-cli connect || echo "WARP connection failed. Continuing without WARP."
 
 # 1) Start Cloudflare WARP daemon in the background
 #nohup warp-svc > /dev/null 2>&1 &
@@ -25,5 +25,5 @@ warp-cli connect || echo "WARP connection failed. Continuing without WARP."
 
 # 4) Start your primary app (Flask, etc.)
 #    Use 'exec' so your process gets signals directly
-echo "Starting Flask app..."
-exec python app.py
+#echo "Starting Flask app..."
+#python app.py
