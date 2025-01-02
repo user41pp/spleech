@@ -44,6 +44,9 @@ RUN pip install youtube-transcript-api flask
 # 3) Clone your repository
 # ----------------------------
 #  Use a cache-bust trick so that we always pull the latest code
+# Add the ARG (this value can be updated on each build to invalidate the cache)
+ARG CACHEBUSTER
+RUN echo "Cachebuster is $CACHEBUSTER"
 RUN echo $(date +%s) > /CACHE_BUST
 RUN echo $(date +%s)
 RUN git clone https://github.com/user41pp/spleech.git .
