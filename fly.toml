@@ -24,11 +24,6 @@ processes = ["app"]
     handlers = ["tls"]
     port = 443
 
-  [[services.http_checks]]
-    path = "/health"
-    interval = "10s"
-    timeout = "2s"
-
 [[vm]]
 cpu_kind = "shared"
 cpus = 1

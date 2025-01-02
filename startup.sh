@@ -9,7 +9,7 @@ nohup warp-svc > /dev/null 2>&1 &
 echo "Waiting 5s to ensure warp-svc is running..."
 sleep 5
 # 3) Automatically accept TOS, register, and connect
-yes y | warp-cli registration new
+yes y | warp-cli registration new --accept-tos
 warp-cli connect
 
 
