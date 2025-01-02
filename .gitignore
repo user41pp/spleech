@@ -173,4 +173,3 @@ cython_debug/
 .fly
 cookies.txt
 fly_setup.txt
-fly.toml
