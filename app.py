@@ -4,6 +4,23 @@ from youtube_transcript_api import YouTubeTranscriptApi
 import time
 import os
 import logging
+import requests
+
+# Create a custom session
+custom_session = requests.Session()
+custom_session.headers.update({
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/99.0.4844.84 Safari/537.36"
+    ),
+    "Accept-Language": "en-US,en;q=0.9",
+    # Add any other headers you need here
+})
+
+# Monkey-patch the library’s private session to use our custom session
+YouTubeTranscriptApi._YouTubeTranscriptApi__session = custom_session
+
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
