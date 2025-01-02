@@ -27,12 +27,53 @@ logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %
 
 app = Flask(__name__)
 
-def get_transcript(video_id, cookies_path, retries=3, delay=2):
+import re
+from urllib.parse import urlparse, parse_qs
+
+def extract_video_id(youtube_url_or_id):
+    """
+    Extracts the YouTube video ID from a URL or video ID.
+
+    Args:
+        youtube_url_or_id (str): A YouTube video URL or video ID.
+
+    Returns:
+        str: The video ID, or None if extraction fails.
+    """
+    # Regular expression to match a YouTube video ID
+    video_id_pattern = r'^[a-zA-Z0-9_-]{11}$'  # Matches valid YouTube video IDs which are 11 characters long
+
+    # Check if the input is already a video ID
+    if re.match(video_id_pattern, youtube_url_or_id):
+        return youtube_url_or_id
+
+    # Parse the URL to extract the query parameters
+    try:
+        parsed_url = urlparse(youtube_url_or_id)  # Parses the URL to understand its structure and extract components
+        query_params = parse_qs(parsed_url.query)
+
+        # Extract the video ID from the "v" parameter
+        if "v" in query_params:
+            return query_params["v"][0]
+
+        # Handle shortened YouTube links (youtu.be/ID)
+        if parsed_url.netloc in ("youtu.be", "www.youtu.be"):  # Specifically handles shortened YouTube URLs
+            return parsed_url.path.lstrip("/")
+
+    except Exception as e:
+        # Log the exception for debugging purposes
+        print(f"Error parsing URL: {e}")
+
+    # Return None if the video ID couldn't be extracted
+    return None
+
+def get_transcript(youtube_url_or_video_id, retries=3, delay=2):
+    video_id = extract_video_id(youtube_url_or_video_id)
+    logging.debug(f"Extracted videoID: {video_id}")
     for attempt in range(retries):
         try:
-            logging.debug(f"Attempt {attempt + 1} to fetch transcript for video_id={video_id} with cookies at {cookies_path}")
+            logging.debug(f"Attempt {attempt + 1} to fetch transcript for video_id={video_id}")
             transcript = YouTubeTranscriptApi.get_transcript(video_id)
-            #transcript = YouTubeTranscriptApi.get_transcript(video_id, cookies=cookies_path)
             logging.info(f"Successfully fetched transcript for video_id={video_id}")
             return transcript
         except Exception as e:
@@ -59,28 +100,12 @@ def fetch_transcript():
         data = request.get_json()
         logging.debug(f"Received request data: {data}")
         video_id = data.get('video_id')
-        cookies = data.get('cookies')
 
         if not video_id or not isinstance(video_id, str) or len(video_id.strip()) == 0:
             logging.error("Invalid or missing video_id")
             return jsonify({"error": "Invalid or missing video_id"}), 400
 
-        if not cookies or not isinstance(cookies, str) or len(cookies.strip()) == 0:
-            logging.error("Invalid or missing cookies")
-            return jsonify({"error": "Invalid or missing cookies"}), 400
-
-        # Write cookies to a file
-        cookies_path = os.path.join(os.getcwd(), 'cookies.txt')
-        logging.debug(f"Writing cookies to file at {cookies_path}")
-        try:
-            with open(cookies_path, 'w') as f:
-                f.write(cookies)
-        except Exception as e:
-            logging.error(f"Failed to write cookies file: {e}")
-            return jsonify({"error": f"Failed to write cookies file: {e}"}), 500
-
-        # Use the path to cookies.txt in get_transcript
-        result = get_transcript(video_id, cookies_path)
+        result = get_transcript(video_id)
         if isinstance(result, str):  # Error message
             logging.error(f"Error fetching transcript: {result}")
             return jsonify({"error": result}), 500
@@ -93,23 +118,12 @@ def fetch_transcript():
 
 def main_cli():
     logging.debug("CLI mode called")
-    parser = argparse.ArgumentParser(description="Fetch YouTube video transcript using video ID and cookies.\nExample: python script.py <video_id> <cookies>")
+    parser = argparse.ArgumentParser(description="Fetch YouTube video transcript using video ID and cookies.\nExample: python app.py <video_id>")
     parser.add_argument('video_id', type=str, help="The ID of the YouTube video.")
-    parser.add_argument('cookies', type=str, help="The cookies string to authenticate requests.")
 
     args = parser.parse_args()
 
-    # Write cookies to a file
-    cookies_path = os.path.join(os.getcwd(), 'cookies.txt')
-    logging.debug(f"Writing cookies to file at {cookies_path}")
-    try:
-        with open(cookies_path, 'w') as f:
-            f.write(args.cookies)
-    except Exception as e:
-        logging.error(f"Failed to write cookies file: {e}")
-        return
-
-    result = get_transcript(args.video_id, cookies_path)
+    result = get_transcript(args.video_id)
     if isinstance(result, str):  # Error message
         logging.error(f"Error: {result}")
     else:
