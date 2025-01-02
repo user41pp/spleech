@@ -45,6 +45,7 @@ RUN pip install youtube-transcript-api flask
 # ----------------------------
 #  Use a cache-bust trick so that we always pull the latest code
 RUN echo $(date +%s) > /CACHE_BUST
+RUN echo $(date +%s)
 RUN git clone https://github.com/user41pp/spleech.git .
 
 # ----------------------------
@@ -57,6 +58,7 @@ RUN chmod +x /app/startup_wrapper.sh
 EXPOSE 5000
 
 # Use the startup script as the default entrypoint
+RUN echo $(date +%s)
 ENTRYPOINT ["/app/startup.sh"]
 
 # Keep the container running unless overriden
