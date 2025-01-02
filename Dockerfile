@@ -60,6 +60,3 @@ EXPOSE 5000
 # Use the startup script as the default entrypoint
 RUN echo $(date +%s)
 ENTRYPOINT ["/app/startup.sh"]
-
-# Keep the container running unless overriden
-CMD ["sleep", "inf"]
