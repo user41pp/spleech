@@ -15,12 +15,10 @@ custom_session.headers.update({
         "Chrome/99.0.4844.84 Safari/537.36"
     ),
     "Accept-Language": "en-US,en;q=0.9",
-    # Add any other headers you need here
 })
 
 # Monkey-patch the library’s private session to use our custom session
 YouTubeTranscriptApi._YouTubeTranscriptApi__session = custom_session
-
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -40,7 +38,6 @@ def extract_video_id(youtube_url_or_id):
     Returns:
         str: The video ID, or None if extraction fails.
     """
-    # Regular expression to match a YouTube video ID
     video_id_pattern = r'^[a-zA-Z0-9_-]{11}$'  # Matches valid YouTube video IDs which are 11 characters long
 
     # Check if the input is already a video ID
@@ -49,7 +46,7 @@ def extract_video_id(youtube_url_or_id):
 
     # Parse the URL to extract the query parameters
     try:
-        parsed_url = urlparse(youtube_url_or_id)  # Parses the URL to understand its structure and extract components
+        parsed_url = urlparse(youtube_url_or_id)
         query_params = parse_qs(parsed_url.query)
 
         # Extract the video ID from the "v" parameter
@@ -57,14 +54,16 @@ def extract_video_id(youtube_url_or_id):
             return query_params["v"][0]
 
         # Handle shortened YouTube links (youtu.be/ID)
-        if parsed_url.netloc in ("youtu.be", "www.youtu.be"):  # Specifically handles shortened YouTube URLs
+        if parsed_url.netloc in ("youtu.be", "www.youtu.be"):
             return parsed_url.path.lstrip("/")
 
-    except Exception as e:
-        # Log the exception for debugging purposes
-        print(f"Error parsing URL: {e}")
+        # Handle YouTube Shorts links
+        if parsed_url.netloc in ("www.youtube.com", "youtube.com") and parsed_url.path.startswith("/shorts/"):
+            return parsed_url.path.split("/")[-1]
 
-    # Return None if the video ID couldn't be extracted
+    except Exception as e:
+        logging.error(f"Error parsing URL: {e}")
+
     return None
 
 def extract_clean_text(transcript_data):
@@ -73,7 +72,6 @@ def extract_clean_text(transcript_data):
 
     Parameters:
         transcript_data (list): The transcript data containing timestamps and text.
-            Expected format: [{'duration': float, 'start': float, 'text': str}, ...]
 
     Returns:
         str: A single string with all the transcript text concatenated and cleaned of metadata.
@@ -83,7 +81,6 @@ def extract_clean_text(transcript_data):
 
     clean_text = ' '.join(entry['text'] for entry in transcript_data if isinstance(entry, dict) and 'text' in entry)
     return str(clean_text)
-
 
 def get_transcript(youtube_url_or_video_id, retries=3, delay=2):
     video_id = extract_video_id(youtube_url_or_video_id)
