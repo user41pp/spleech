@@ -47,6 +47,10 @@ def status():
     logging.debug("Status endpoint called")
     return jsonify({"status": "App is running", "app_name": "spleech-rough-wildflower-5228"})
 
+@app.route("/health", methods=["GET"])
+def health_check():
+    return jsonify({"status": "healthy"}), 200
+
 @app.route('/transcript', methods=['POST'])
 def fetch_transcript():
     logging.debug("Transcript endpoint called")

@@ -16,10 +16,10 @@ WORKDIR /app
 #   - Install warp-cli
 #
 #   NOTE: For Debian 11 (bullseye). If you are on a different
-#   base distro, you will need to adjust accordingly. 
+#   base distro, you will need to adjust accordingly.
 # ----------------------------
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends git gnupg curl nano htop tmux && \
+    apt-get install -y --no-install-recommends gnupg curl && \
     curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --dearmor | \
       tee /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg >/dev/null && \
     echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ bullseye main" \
@@ -55,26 +55,6 @@ RUN chmod +x /app/startup_wrapper.sh
 
 # Expose the Flask port
 EXPOSE 5000
-
-# ----------------------------
-# (Optional) Configure WARP 
-#
-# You may wish to:
-#   - warp-cli register
-#   - warp-cli set-mode proxy
-#   - warp-cli connect
-#
-# Instead of placing these in the Dockerfile (which can lead to
-# ephemeral or build-time issues), often it’s better to run them
-# in your startup script or entrypoint if WARP needs a login token
-# or Zero Trust configuration. Below is an example snippet:
-#
-# RUN warp-cli register
-# RUN warp-cli set-mode proxy
-# RUN warp-cli connect
-#
-# You can embed those lines below, or inside startup.sh.
-# ----------------------------
 
 # Use the startup script as the default entrypoint
 ENTRYPOINT ["/app/startup.sh"]

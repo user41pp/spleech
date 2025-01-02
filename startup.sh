@@ -10,6 +10,7 @@ sleep 2
 # 3) Automatically accept TOS, register, and connect
 #    (If "warp-cli register --accept-tos" is sufficient for you, use that)
 yes y | warp-cli registration new
+warp-cli mode proxy
 warp-cli connect
 
 # 4) Start your primary app (Flask, etc.)

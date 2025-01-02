@@ -6,7 +6,7 @@ auto_start_machines = true
 auto_stop_machines = true
 force_https = true
 internal_port = 5000 # Update this to match Flask's default port
-min_machines_running = 0
+min_machines_running = 1
 processes = ["app"]
 
 [experimental]
@@ -24,7 +24,14 @@ processes = ["app"]
     handlers = ["tls"]
     port = 443
 
+  [[services.http_checks]]
+    path = "/health"
+    interval = "10s"
+    timeout = "2s"
+
 [[vm]]
 cpu_kind = "shared"
 cpus = 1
 memory = "1gb"
+
+
